@@ -4,8 +4,12 @@ import 'package:meal/screens/meals.dart';
 import 'package:meal/widgets/category_grid_item.dart';
 import 'package:meal/model/Category.dart';
 
+import '../model/meal.dart';
+
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key});
+  const CategoryScreen({super.key, required this.onToggleFavorites});
+
+  final void Function(Meal meal) onToggleFavorites;
 
   void _selectCategory(BuildContext context, Category category) {
     final filteredMeals = dummyMeals
@@ -20,6 +24,7 @@ class CategoryScreen extends StatelessWidget {
             MealsScreen(
           title: category.title,
           meals: filteredMeals,
+          onToggleFavorites: onToggleFavorites,
         ),
       ),
     );
@@ -27,29 +32,24 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Your Category'),
+    return GridView(
+      padding: const EdgeInsets.all(24),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3 / 2,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
       ),
-      body: GridView(
-        padding: const EdgeInsets.all(24),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 2,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-        ),
-        children: [
-          //availableCategories.map((category) => CategoryGridItem(category: Category,onSelectCategory: _selectCategory,)).toList()
-          for (final category in availableCategories)
-            CategoryGridItem(
-              category: category,
-              onSelectCategory: () {
-                _selectCategory(context, category);
-              },
-            ),
-        ],
-      ),
+      children: [
+        //availableCategories.map((category) => CategoryGridItem(category: Category,onSelectCategory: _selectCategory,)).toList()
+        for (final category in availableCategories)
+          CategoryGridItem(
+            category: category,
+            onSelectCategory: () {
+              _selectCategory(context, category);
+            },
+          ),
+      ],
     );
   }
 }
